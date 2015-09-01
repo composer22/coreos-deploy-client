@@ -4,7 +4,7 @@
 [![Current Release](https://img.shields.io/badge/release-v0.0.1-brightgreen.svg)](https://github.com/composer22/coreos-deploy-client/releases/tag/v0.0.1)
 [![Coverage Status](https://coveralls.io/repos/composer22/coreos-deploy-client/badge.svg?branch=master)](https://coveralls.io/r/composer22/coreos-deploy-client?branch=master)
 
-An API for interacting with CoreOS-Deploy written in [Go.](http://golang.org)
+A CLI for interacting with CoreOS-Deploy written in [Go.](http://golang.org)
 
 ## About
 
@@ -24,10 +24,11 @@ Etcd2 key values should be submitted as a text file with a space delimeter betwe
 ## Usage
 
 This command performs two functions:
+
 * Submitting a deploy request to the coreos-deploy server in a CoreOS cluster.
 * Retrieving the result of a previous deploy request.
 
-When submitting a deploy requests, a unique deploy ID is returned.  Use this in a
+When submitting a deploy request, a unique deploy ID is returned.  Use this in a
 subsequent call to retrieve the result.
 
 ```
@@ -79,6 +80,8 @@ A successful build run produces no messages and creates an executable called `co
 directory.
 
 Run `go help` for more guidance, and visit <http://golang.org/> for tutorials, presentations, references and more.
+
+Run `./build.sh` for multiple platforms.
 
 ## License
 
