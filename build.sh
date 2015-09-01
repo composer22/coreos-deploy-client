@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Build all executables
-
+#
+# ex: ./build.sh
+#
 # 386 = 32 bit
 # amd = 64 bit
-# arm = 32 bit
 #
 # $GOOS			$GOARCH
 # ====================
