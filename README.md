@@ -4,7 +4,7 @@
 [![Current Release](https://img.shields.io/badge/release-v0.0.1-brightgreen.svg)](https://github.com/composer22/coreos-deploy-client/releases/tag/v0.0.1)
 [![Coverage Status](https://coveralls.io/repos/composer22/coreos-deploy-client/badge.svg?branch=master)](https://coveralls.io/r/composer22/coreos-deploy-client?branch=master)
 
-A CLI for interacting with CoreOS-Deploy written in [Go.](http://golang.org)
+A CLI for interacting with coreos-deploy written in [Go.](http://golang.org)
 
 ## About
 
