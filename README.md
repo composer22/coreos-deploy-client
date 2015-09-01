@@ -17,8 +17,9 @@ You will need a valid API token to access the server
 
 Etcd2 key values should be submitted as a text file with a space delimeter between key and value:
 ```
-/my/etcd2/key somevalue
-/my/etcd2/key another value with embedded spaces.
+/my/etcd2/key1 somevalue1
+/my/etcd2/key2 somevalue2
+/my/etcd2/key3 another value with embedded spaces.
 ```
 ## Usage
 
