@@ -104,10 +104,6 @@ func (c *Client) getStatus() {
 
 // sendRequest sends a request to the server and prints the result.
 func (c *Client) sendRequest(req *http.Request) {
-
-	fmt.Println(req)
-	return
-
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.opts.Token))
