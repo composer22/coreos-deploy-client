@@ -13,7 +13,7 @@ Usage: coreos-deploy-client [options...]
 Server options:
     -n, --name NAME                  NAME of the service (mandatory).
     -r, --service_version VERSION    VERSION of the service (mandatory).
-    -n, --instances INSTANCES        Number of INSTANCES to deploy. (default: 2).
+    -i, --instances INSTANCES        Number of INSTANCES to deploy. (default: 2).
     -t, --template_filepath TEMPLATE Path and filename to the unit .service TEMPLATE (mandatory).
     -e, --etcd2_filepath ETCD2FILE   Path and filename to the etcd2 key/value ETCD2FILE.
     -b, --bearer_token TOKEN         The API authorization TOKEN for the server.
@@ -30,7 +30,7 @@ Common options:
 Examples:
 
    # Deploy a service and return a deploy ID...
-    coreos-deploy-client -n my-application -r 1.0.1 -n 2 -t /path/to/my-application@.service \
+    coreos-deploy-client -n my-application -r 1.0.1 -i 2 -t /path/to/my-application@.service \
 	  -e /path/to/my-application.etcd2 -b AP1T0K3N -u http://coreos-dev.example.com:80
 
 	# Check the status of a recent deploy...

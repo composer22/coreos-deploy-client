@@ -13,9 +13,14 @@ or check the status of a previous deploy request to the server.
 
 ## Requirements
 
-You will need a valid API token to access the server
+You need to server source:
 
-Etcd2 key values should be submitted as a text file with a space delimeter between key and value:
+go get github.com/composer22/coreos-deploy
+
+You will also need a valid API token setup there to access the server.
+
+Etcd2 key values should be submitted as a text file with a space delimeter
+between key and value:
 ```
 /my/etcd2/key1 somevalue1
 /my/etcd2/key2 somevalue2
@@ -39,7 +44,7 @@ Usage: coreos-deploy-client [options...]
 Server options:
     -n, --name NAME                  NAME of the service (mandatory).
     -r, --service_version VERSION    VERSION of the service (mandatory).
-    -n, --instances INSTANCES        Number of INSTANCES to deploy. (default: 2).
+    -i, --instances INSTANCES        Number of INSTANCES to deploy. (default: 2).
     -t, --template_filepath TEMPLATE Path and filename to the unit .service TEMPLATE (mandatory).
     -e, --etcd2_filepath ETCD2FILE   Path and filename to the etcd2 key/value ETCD2FILE.
     -b, --bearer_token TOKEN         The API authorization TOKEN for the server.
@@ -56,11 +61,14 @@ Common options:
 Examples:
 
    # Deploy a service and return a deploy ID...
-    coreos-deploy-client -n my-application -r 1.0.1 -n 2 -t /path/to/my-application@.service \
-	  -e /path/to/my-application.etcd2 -b AP1T0K3N -u http://coreos-dev.example.com:80
+    coreos-deploy-client -n my-application -r 1.0.1 -i 2 \
+	 -t /path/to/my-application@.service \
+	 -e /path/to/my-application.etcd2 -b AP1T0K3N \
+	 -u http://coreos-dev.example.com:80
 
 	# Check the status of a recent deploy...
-	coreos-deploy-client -b AP1T0K3N -u http://coreos-dev.example.com:80 -p DC8D9C2E-8161-4FC0-937F-4CA7037970D5
+	coreos-deploy-client -b AP1T0K3N -u http://coreos-dev.example.com:80 \
+	 -p DC8D9C2E-8161-4FC0-937F-4CA7037970D5
 ```
 
 ## Building

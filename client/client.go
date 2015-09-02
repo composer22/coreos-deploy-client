@@ -94,7 +94,7 @@ func (c *Client) deploy() {
 
 // getStatus prints out the status of a previous deploy.
 func (c *Client) getStatus() {
-	req, err := http.NewRequest(httpGet, fmt.Sprintf("%s%s%s", httpRouteV1Status, c.opts.Url, c.opts.DeployID), nil)
+	req, err := http.NewRequest(httpGet, fmt.Sprintf("%s%s%s", c.opts.Url, httpRouteV1Status, c.opts.DeployID), nil)
 	if err != nil {
 		PrintErr(err.Error())
 		return
@@ -119,5 +119,5 @@ func (c *Client) sendRequest(req *http.Request) {
 		PrintErr(err.Error())
 		return
 	}
-	fmt.Println(body)
+	fmt.Println(string(body))
 }
