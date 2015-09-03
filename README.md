@@ -69,8 +69,19 @@ Examples:
 	# Check the status of a recent deploy...
 	coreos-deploy-client -b AP1T0K3N -u http://coreos-dev.example.com:80 \
 	 -p DC8D9C2E-8161-4FC0-937F-4CA7037970D5
-```
 
+```
+## CLI Bash Wrapper
+
+A CLI bash script is provided for ease of use. The script prompts the user
+for parameters and provides environment variables for the API token and
+service URL.  To review help on the command, type one of the following:
+```
+./coreos-deploy-client.sh help
+./coreos-deploy-client.sh help deploy
+./coreos-deploy-client.sh help status
+
+```
 ## Building
 
 This code currently requires version 1.42 or higher of Go.
