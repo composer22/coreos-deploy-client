@@ -183,6 +183,7 @@ $HELP_HEADER
 Available help:
 1) deploy
 2) status
+3) usage
 EOF
 echo "Pick what you need by typing a number: "
 }
@@ -252,6 +253,7 @@ function parse_help() {
 	  	case "$targeted_help" in
 	    	1|deploy) help_deploy $skip_header ;;
 	    	2|status) help_status $skip_header ;;
+			3|usage) help_usage $skip_header ;;
 	    	*) help_usage ;;
 	  	esac
 	  	break
