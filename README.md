@@ -94,6 +94,8 @@ ExecStartPre=-/usr/bin/docker rmi example.com/foo-server:1.0.9
 ```
 before being passed to the server.
 
+For more template options and features, please see [golang templates](http://golang.org/pkg/text/template/).
+
 ## CLI Bash Wrapper
 
 A CLI bash script is provided for ease of use. The script prompts the user
