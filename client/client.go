@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"text/template"
 
 	"github.com/composer22/coreos-deploy/server"
 )
@@ -40,6 +41,14 @@ func (c *Client) Execute() {
 	c.getStatus()
 }
 
+// Text template variables to substitute in the .service template.
+type ServiceTemplateVars struct {
+	Name         string `json:"name"`         // The name of the service to deploy.
+	Version      string `json:"version"`      // The version of the service.
+	ImageVersion string `json:"imageVersion"` // The version of the docker image.
+	NumInstances int    `json:"numInstances"` // The number of instances to deploy.
+}
+
 // deploy submits a deploy request to the server.
 func (c *Client) deploy() {
 	// Read in template file.
@@ -48,7 +57,27 @@ func (c *Client) deploy() {
 		PrintErr(err.Error())
 		return
 	}
-	tmpl := string(tf[:])
+
+	// Fill any template variables.
+	stv := &ServiceTemplateVars{
+		Name:         c.opts.Name,
+		Version:      c.opts.Version,
+		ImageVersion: c.opts.ImageVersion,
+		NumInstances: c.opts.NumInstances,
+	}
+	t, err := template.New("service template").Parse(string(tf[:]))
+	if err != nil {
+		PrintErr(err.Error())
+		return
+	}
+
+	var tb bytes.Buffer
+	err = t.Execute(&tb, stv)
+	if err != nil {
+		PrintErr(err.Error())
+		return
+	}
+	tmpl := tb.String()
 
 	// Read in etcd2 key/values.
 	keys := make(map[string]string)

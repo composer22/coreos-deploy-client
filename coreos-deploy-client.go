@@ -17,6 +17,8 @@ func main() {
 	flag.StringVar(&opts.Name, "name", "", "Name of the service.")
 	flag.StringVar(&opts.Version, "r", "", "Version of the service.")
 	flag.StringVar(&opts.Version, "service_version", "", "Version of the service.")
+	flag.StringVar(&opts.ImageVersion, "k", "latest", "Version of the docker image.")
+	flag.StringVar(&opts.ImageVersion, "image_version", "latest", "Version of the docker image.")
 	flag.IntVar(&opts.NumInstances, "i", 2, "Number of instances to instantiate.")
 	flag.IntVar(&opts.NumInstances, "instances", 2, "Number of instances to instantiate.")
 	flag.StringVar(&opts.TemplateFilePath, "t", "", "path/file to the unit .service file.")

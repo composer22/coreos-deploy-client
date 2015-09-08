@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Set environment for OS.
+unamestr=`uname`
+if [[ "$unamestr" == 'Linux' ]]
+then
+   export COREOS_DEPLOY_EXE=coreos-deploy-client-linux-amd64
+elif [[ "$unamestr" == 'Darwin' ]]
+then
+   export COREOS_DEPLOY_EXE=coreos-deploy-client-darwin-amd64
+else
+   export COREOS_DEPLOY_EXE=coreos-deploy-client-windows-amd64.exe
+fi
+
 # Set base environment variables.
 function init() {
 	if [ -z "$COREOS_DEPLOY_URL" ]
@@ -32,14 +44,16 @@ function deploy() {
 	init
 	name=
 	version=
+	image_version=
 	instances=
 	template_filepath=
 	etcd2_filepath=
 	shift
-	while getopts "n:r:i::t:e::" VALUE "$@" ; do
+	while getopts "n:r:k::i::t:e::" VALUE "$@" ; do
 	  	case "$VALUE" in
 			n) name="$OPTARG" ;;
 			r) version="$OPTARG" ;;
+			k) image_version="$OPTARG" ;;
 			i) instances="$OPTARG" ;;
 			t) template_filepath="$OPTARG" ;;
 			e) etcd2_filepath="$OPTARG" ;;
@@ -74,6 +88,17 @@ function deploy() {
 		namespace=help
 		targeted_help=deploy
 		return 0
+	fi
+
+	if [ -z "$image_version" ]
+	then
+		echo "Enter docker image version (defaults to 'latest') [ENTER]:"
+		read inp
+		image_version=$inp
+	fi
+	if [ -z "$image_version" ]
+	then
+		image_version=latest
 	fi
 
 	if [ -z "$instances" ]
@@ -114,7 +139,7 @@ function deploy() {
 		opt_etcd2="-e $etcd2_filepath"
 	fi
 
-	./coreos-deploy-client -n $name -r $version -i $instances \
+	./$COREOS_DEPLOY_EXE -n $name -r $version -k $image_version -i $instances \
 	  	-t $template_filepath $opt_etcd2 -u $COREOS_DEPLOY_URL \
 		-b $COREOS_DEPLOY_TOKEN
 	break
@@ -146,7 +171,7 @@ function status() {
 		return 0
 	fi
 
-	./coreos-deploy-client -u $COREOS_DEPLOY_URL -b $COREOS_DEPLOY_TOKEN \
+	./$COREOS_DEPLOY_EXE -u $COREOS_DEPLOY_URL -b $COREOS_DEPLOY_TOKEN \
 		-p $deploy_id
 	break
 }
@@ -204,6 +229,8 @@ Deploy command usage:
   -n    The name of the application service (ex mobile-video).
 
   -r    The unique version of the service (ex: 1.0.2).
+
+  -k    The unique version of the docker image (ex: 1.0.2 [defaults to 'latest']).
 
   -i    The number of service instances to launch. Defaults to 2 instances.
 

@@ -9,6 +9,7 @@ import (
 type Options struct {
 	Name             string `json:"name"`             // The name of the service to deploy.
 	Version          string `json:"version"`          // The version of the service.
+	ImageVersion     string `json:"imageVersion"`     // The version of the docker image.
 	NumInstances     int    `json:"numInstances"`     // The number of instances to deploy.
 	TemplateFilePath string `json:"templateFilePath"` // The path to the unit .service file source file.
 	Etcd2FilePath    string `json:"etcd2FilePath"`    // The path to the etcd2 key/value source file.

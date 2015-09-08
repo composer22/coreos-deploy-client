@@ -13,11 +13,11 @@ or check the status of a previous deploy request to the server.
 
 ## Requirements
 
-You need to server source:
+If you compile, you need the server source:
 
 go get github.com/composer22/coreos-deploy
 
-You will also need a valid API token setup there to access the server.
+You will also need a valid API token defined in the server to access the server.
 
 Etcd2 key values should be submitted as a text file with a space delimeter
 between key and value:
@@ -44,6 +44,7 @@ Usage: coreos-deploy-client [options...]
 Server options:
     -n, --name NAME                  NAME of the service (mandatory).
     -r, --service_version VERSION    VERSION of the service (mandatory).
+    -k, --image_version VERSION      VERSION of the docker image (default: latest).
     -i, --instances INSTANCES        Number of INSTANCES to deploy. (default: 2).
     -t, --template_filepath TEMPLATE Path and filename to the unit .service TEMPLATE (mandatory).
     -e, --etcd2_filepath ETCD2FILE   Path and filename to the etcd2 key/value ETCD2FILE.
@@ -61,8 +62,8 @@ Common options:
 Examples:
 
    # Deploy a service and return a deploy ID...
-    coreos-deploy-client -n my-application -r 1.0.1 -i 2 \
-	 -t /path/to/my-application@.service \
+    coreos-deploy-client -n my-application -r 1.0.1 -k 1.0.1 -i 2 \
+	 -t /path/to/my-application@.service.tmpl \
 	 -e /path/to/my-application.etcd2 -b AP1T0K3N \
 	 -u http://coreos-dev.example.com:80
 
@@ -71,6 +72,28 @@ Examples:
 	 -p DC8D9C2E-8161-4FC0-937F-4CA7037970D5
 
 ```
+## Template Syntax -- .service files
+
+Template string substitution is optinally available with the template text file. The
+following passed CLI variables are available to use within the service template:
+```
+type ServiceTemplateVars struct {
+	Name         string `json:"name"`         // The name of the service to deploy.
+	Version      string `json:"version"`      // The version of the service.
+	ImageVersion string `json:"imageVersion"` // The version of the docker image.
+	NumInstances int    `json:"numInstances"` // The number of instances to deploy.
+}
+```
+To use within the text file, use the double bracket syntax. For example:
+```
+ExecStartPre=-/usr/bin/docker rmi example.com/foo-server:{{.ImageVersion}}
+```
+For example, when passing 1.0.9 using -k parameter, this will evaluate as:
+```
+ExecStartPre=-/usr/bin/docker rmi example.com/foo-server:1.0.9
+```
+before being passed to the server.
+
 ## CLI Bash Wrapper
 
 A CLI bash script is provided for ease of use. The script prompts the user

@@ -1,0 +1,27 @@
+[Unit]
+Description=Example App
+After=docker.service
+Requires=docker.service
+
+[Service]
+Restart=on-abnormal
+TimeoutStartSec=0
+KillMode=none
+EnvironmentFile=/etc/environment
+ExecStartPre=-/usr/bin/docker kill example-app
+ExecStartPre=-/usr/bin/docker rm example-app
+ExecStartPre=-/usr/bin/docker rmi example.com/example-app:{{.ImageVersion}}
+ExecStartPre=/usr/bin/docker pull example.com/example-app:{{.ImageVersion}}
+ExecStart=/usr/bin/bash -c \
+"/usr/bin/docker run --name example-app -h `hostname` \
+--add-host=parent-host:`ip route show | grep docker0 | awk '{print \$9}'` \
+-v /var/log/example.com/example-app/:/var/log \
+-p 8081:8080 \
+example.com/example-app:{{.ImageVersion}}"
+ExecStop=-/usr/bin/docker stop example-app
+ExecStopPost=-/usr/bin/docker rm example-app
+ExecStopPost=-/usr/bin/docker rmi example.com/example-app:{{.ImageVersion}}
+
+[X-Fleet]
+MachineMetadata=role=worker
+Conflicts=example-app*@*.service
