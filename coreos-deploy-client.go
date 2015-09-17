@@ -3,6 +3,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"strings"
 
 	"github.com/composer22/coreos-deploy-client/client"
@@ -64,5 +65,10 @@ func main() {
 
 	// Run the deploy.
 	c := client.New(opts)
-	c.Execute()
+	result, err := c.Execute()
+	if err != nil {
+		client.PrintErr(err.Error())
+	} else {
+		fmt.Println(result)
+	}
 }

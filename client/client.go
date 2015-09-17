@@ -33,12 +33,13 @@ func PrintVersionAndExit() {
 }
 
 // Execute communicates to the server with an action.
-func (c *Client) Execute() {
+func (c *Client) Execute() (string, error) {
 	if c.opts.DeployID == "" {
-		c.deploy()
-		return
+		result, err := c.deploy()
+		return result, err
 	}
-	c.getStatus()
+	result, err := c.getStatus()
+	return result, err
 }
 
 // Text template variables to substitute in the .service template.
@@ -50,12 +51,11 @@ type ServiceTemplateVars struct {
 }
 
 // deploy submits a deploy request to the server.
-func (c *Client) deploy() {
+func (c *Client) deploy() (string, error) {
 	// Read in template file.
 	tf, err := ioutil.ReadFile(c.opts.TemplateFilePath)
 	if err != nil {
-		PrintErr(err.Error())
-		return
+		return "", err
 	}
 
 	// Fill any template variables.
@@ -67,15 +67,13 @@ func (c *Client) deploy() {
 	}
 	t, err := template.New("service template").Parse(string(tf[:]))
 	if err != nil {
-		PrintErr(err.Error())
-		return
+		return "", err
 	}
 
 	var tb bytes.Buffer
 	err = t.Execute(&tb, stv)
 	if err != nil {
-		PrintErr(err.Error())
-		return
+		return "", err
 	}
 	tmpl := tb.String()
 
@@ -84,8 +82,7 @@ func (c *Client) deploy() {
 	if c.opts.Etcd2FilePath != "" {
 		file, err := os.Open(c.opts.Etcd2FilePath)
 		if err != nil {
-			PrintErr(err.Error())
-			return
+			return "", err
 		}
 		scanner := bufio.NewScanner(file)
 		for scanner.Scan() {
@@ -99,8 +96,7 @@ func (c *Client) deploy() {
 
 		if err := scanner.Err(); err != nil {
 			file.Close()
-			PrintErr(err.Error())
-			return
+			return "", err
 		}
 		file.Close()
 	}
@@ -108,45 +104,40 @@ func (c *Client) deploy() {
 	// Create the payload.
 	payload, err := json.Marshal(server.NewServiceRequest(c.opts.Name, c.opts.Version, c.opts.NumInstances, tmpl, keys))
 	if err != nil {
-		PrintErr(err.Error())
-		return
+		return "", err
 	}
 
 	// Send the request.
 	req, err := http.NewRequest(httpPost, fmt.Sprintf("%s%s", c.opts.Url, httpRouteV1Deploy), bytes.NewBuffer([]byte(payload)))
 	if err != nil {
-		PrintErr(err.Error())
-		return
+		return "", err
 	}
-	c.sendRequest(req)
+	return c.sendRequest(req)
 }
 
 // getStatus prints out the status of a previous deploy.
-func (c *Client) getStatus() {
+func (c *Client) getStatus() (string, error) {
 	req, err := http.NewRequest(httpGet, fmt.Sprintf("%s%s%s", c.opts.Url, httpRouteV1Status, c.opts.DeployID), nil)
 	if err != nil {
-		PrintErr(err.Error())
-		return
+		return "", err
 	}
-	c.sendRequest(req)
+	return c.sendRequest(req)
 }
 
 // sendRequest sends a request to the server and prints the result.
-func (c *Client) sendRequest(req *http.Request) {
+func (c *Client) sendRequest(req *http.Request) (string, error) {
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.opts.Token))
 	cl := &http.Client{}
 	resp, err := cl.Do(req)
 	if err != nil {
-		PrintErr(err.Error())
-		return
+		return "", err
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		PrintErr(err.Error())
-		return
+		return "", err
 	}
-	fmt.Println(string(body))
+	return string(body), nil
 }
